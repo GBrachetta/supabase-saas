@@ -1,9 +1,16 @@
+import axios from 'axios';
 import initStripe from 'stripe';
 
 import { useUser } from '../context/user';
 
 const Pricing = ({ sortedPlans }) => {
   const { isLoading, login, user } = useUser();
+
+  const processSubscription = (planId) => async () => {
+    const { data } = await axios.get(`/api/subscription/${planId}`);
+
+    console.log(data);
+  };
 
   const showSubscribeButton = !!user && !user.is_subscribed;
   const showCreateAccountButton = !user;
@@ -20,7 +27,11 @@ const Pricing = ({ sortedPlans }) => {
 
           {!isLoading && (
             <div>
-              {showSubscribeButton && <button type="button">Subscribe</button>}
+              {showSubscribeButton && (
+                <button onClick={processSubscription(plan.id)} type="button">
+                  Subscribe
+                </button>
+              )}
               {showCreateAccountButton && (
                 <button onClick={login} type="button">
                   Create Account

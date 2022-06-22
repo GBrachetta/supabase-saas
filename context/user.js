@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -36,6 +37,13 @@ const Provider = ({ children }) => {
       getUserProfile();
     });
   }, []);
+
+  useEffect(() => {
+    axios.post('/api/set-supabase-cookie', {
+      event: user ? 'SIGNED_IN' : 'SIGNED_OUT',
+      session: supabase.auth.session(),
+    });
+  }, [user]);
 
   const login = async () => {
     await supabase.auth.signIn({
