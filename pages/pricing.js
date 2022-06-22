@@ -1,3 +1,4 @@
+import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import initStripe from 'stripe';
 
@@ -9,7 +10,9 @@ const Pricing = ({ sortedPlans }) => {
   const processSubscription = (planId) => async () => {
     const { data } = await axios.get(`/api/subscription/${planId}`);
 
-    console.log(data);
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
+
+    await stripe.redirectToCheckout({ sessionId: data.id });
   };
 
   const showSubscribeButton = !!user && !user.is_subscribed;

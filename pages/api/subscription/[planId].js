@@ -1,4 +1,6 @@
+/* eslint-disable camelcase */
 import cookie from 'cookie';
+import initStripe from 'stripe';
 
 import { supabase } from '../../../utils/supabase';
 
@@ -23,9 +25,27 @@ const handler = async (req, res) => {
     .eq('id', user.id)
     .single();
 
+  const stripe = initStripe(process.env.STRIPE_SECRET_KEY);
+  const { planId } = req.query;
+
+  const lineItems = [
+    {
+      price: planId,
+      quantity: 1,
+    },
+  ];
+
+  const session = await stripe.checkout.sessions.create({
+    cancel_url: 'http://localhost:3000/payment/cancelled',
+    customer: stripe_customer,
+    line_items: lineItems,
+    mode: 'subscription',
+    payment_method_types: ['card'],
+    success_url: 'http://localhost:3000/payment/success',
+  });
+
   res.send({
-    ...user,
-    stripe_customer,
+    id: session.id,
   });
 };
 
