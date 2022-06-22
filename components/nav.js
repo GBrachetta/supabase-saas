@@ -18,13 +18,13 @@ const Nav = () => {
       <Link href="/pricing">
         <a className="ml-2">Pricing</a>
       </Link>
-      {!isLoading && (
-        <div className="ml-auto">
-          <Link href={user ? '/logout' : '/login'}>
-            <a>{user ? 'Logout' : 'Login'}</a>
-          </Link>
-        </div>
-      )}
+      {/* {!isLoading && ( */}
+      <div className="ml-auto">
+        <Link href={user ? '/logout' : '/login'}>
+          <a>{user ? 'Logout' : 'Login'}</a>
+        </Link>
+      </div>
+      {/* )} */}
     </nav>
   );
 };
