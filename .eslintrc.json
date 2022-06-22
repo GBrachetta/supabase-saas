@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@gbrachetta/eslint-config"
+  ],
+  "rules": {
+    "no-console": "off",
+    "react/prop-types": "off",
+    "jsx-a11y/anchor-is-valid": "off"
+  }
+}
