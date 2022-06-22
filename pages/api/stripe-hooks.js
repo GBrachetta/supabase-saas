@@ -38,8 +38,6 @@ const handler = async (req, res) => {
       return;
   }
 
-  console.log({ event });
-
   res.send({ received: true });
 };
 
