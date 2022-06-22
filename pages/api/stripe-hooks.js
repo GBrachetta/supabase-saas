@@ -24,12 +24,22 @@ const handler = async (req, res) => {
   const supabase = getServiceSupabase();
 
   switch (event.type) {
-    case 'customer.subscription.created':
+    case 'customer.subscription.updated':
       await supabase
         .from('profile')
         .update({
           interval: event.data.object.items.data[0].plan.interval,
           is_subscribed: true,
+        })
+        .eq('stripe_customer', event.data.object.customer);
+      break;
+
+    case 'customer.subscription.deleted':
+      await supabase
+        .from('profile')
+        .update({
+          interval: null,
+          is_subscribed: false,
         })
         .eq('stripe_customer', event.data.object.customer);
       break;
