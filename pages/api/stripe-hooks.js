@@ -1,6 +1,8 @@
 import { buffer } from 'micro';
 import initStripe from 'stripe';
 
+import { getServiceSupabase } from '../../utils/supabase';
+
 export const config = { api: { bodyParser: false } };
 
 const handler = async (req, res) => {
@@ -17,6 +19,23 @@ const handler = async (req, res) => {
     console.log(error);
 
     return res.status(400).send(`Webhook error: ${error.message}`);
+  }
+
+  const supabase = getServiceSupabase();
+
+  switch (event.type) {
+    case 'customer.subscription.created':
+      await supabase
+        .from('profile')
+        .update({
+          interval: event.data.object.items.data[0].plan.interval,
+          is_subscribed: true,
+        })
+        .eq('stripe_customer', event.data.object.customer);
+      break;
+
+    default:
+      return;
   }
 
   console.log({ event });
